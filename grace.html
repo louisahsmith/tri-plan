@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Tri Plan · Jul 12</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf7f2;
+    --surface: #ffffff;
+    --surface2: #f5f0e8;
+    --border: #e8e0d0;
+    --text: #1a1712;
+    --muted: #8a8070;
+    --accent: #c85a2a;
+    --accent-dim: rgba(200,90,42,0.08);
+    --spin: #2a6abc;
+    --spin-dim: rgba(42,106,188,0.08);
+    --ride: #1a7a4a;
+    --ride-dim: rgba(26,122,74,0.08);
+    --swim: #2a7a9a;
+    --swim-dim: rgba(42,122,154,0.08);
+    --run: #7a3a9a;
+    --run-dim: rgba(122,58,154,0.08);
+    --brick: #c85a2a;
+    --brick-dim: rgba(200,90,42,0.10);
+    --strength: #7a6a1a;
+    --strength-dim: rgba(122,106,26,0.08);
+    --rest-bg: #f0ece4;
+    --rest-text: #b0a898;
+    --race-bg: #fff8e8;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Fraunces', Georgia, serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(250,247,242,0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px 12px;
+  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; }
+  .header-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; font-weight: 500;
+    letter-spacing: 0.08em; color: var(--muted);
+    text-transform: uppercase;
+  }
+  .race-chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; font-weight: 500;
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid rgba(200,90,42,0.2);
+    padding: 3px 9px; border-radius: 20px;
+  }
+  .countdown {
+    margin-top: 5px;
+    font-size: 24px; font-weight: 500;
+    color: var(--text); letter-spacing: -0.02em;
+    font-style: italic;
+  }
+  .countdown span { color: var(--accent); font-style: normal; font-weight: 700; }
+  .today-sublabel {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--muted); margin-top: 2px;
+  }
+
+  /* ── TABS ── */
+  .tab-bar {
+    display: flex; gap: 5px; padding: 10px 16px 0;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab {
+    flex-shrink: 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; font-weight: 500;
+    padding: 5px 10px; border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer; white-space: nowrap;
+    letter-spacing: 0.04em;
+    transition: all 0.15s;
+  }
+  .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .tab.today-tab { border-color: var(--accent); color: var(--accent); }
+  .tab.recovery-tab { opacity: 0.7; }
+
+  /* ── MAIN ── */
+  main { padding: 0 16px; }
+
+  /* ── WEEK HEADER ── */
+  .week-section { padding: 20px 0 8px; }
+  .week-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 6px; }
+  .week-num-big { font-size: 28px; font-weight: 700; line-height: 1; }
+  .week-dates-small { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 3px; }
+  .phase-tag {
+    font-family: 'DM Mono', monospace; font-size: 10px; font-weight: 500;
+    padding: 4px 10px; border-radius: 20px; letter-spacing: 0.04em;
+  }
+  .phase-Base    { background: #e8f0f8; color: #2a5a8c; border: 1px solid #c8daf0; }
+  .phase-Build   { background: #e8f4ec; color: #1a6a3a; border: 1px solid #b8e0c8; }
+  .phase-Race-Prep { background: #f8ece8; color: #8c3a1a; border: 1px solid #e8c0b0; }
+  .phase-Taper   { background: #f8f4e0; color: #7a6010; border: 1px solid #e0d080; }
+  .phase-Race-Week { background: #fff4cc; color: #7a5400; border: 1px solid #e8c840; }
+  .recovery-badge {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    padding: 2px 7px; border-radius: 10px;
+    background: var(--surface2); color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  /* ── DAY CARDS ── */
+  .day-grid { display: flex; flex-direction: column; gap: 6px; }
+  .day-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    cursor: pointer; transition: all 0.15s;
+    position: relative;
+  }
+  .day-card:active { transform: scale(0.99); }
+  .day-card.today-card { border-color: var(--accent); box-shadow: 0 2px 12px rgba(200,90,42,0.1); }
+  .day-card.no-expand { cursor: default; }
+
+  .day-card::before {
+    content: ''; position: absolute;
+    left: 0; top: 0; bottom: 0; width: 3px;
+    border-radius: 16px 0 0 16px;
+  }
+  .type-spin::before    { background: var(--spin); }
+  .type-ride::before    { background: var(--ride); }
+  .type-swim::before    { background: var(--swim); }
+  .type-run::before     { background: var(--run); }
+  .type-brick::before   { background: var(--brick); }
+  .type-strength::before{ background: var(--strength); }
+  .type-rest::before    { background: var(--border); }
+  .type-race::before    { background: #e8a800; }
+
+  .day-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 13px 11px 14px;
+  }
+  .day-abbr {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--muted); flex-shrink: 0; width: 26px;
+  }
+  .day-abbr.is-today { color: var(--accent); }
+  .day-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .dot-spin     { background: var(--spin); }
+  .dot-ride     { background: var(--ride); }
+  .dot-swim     { background: var(--swim); }
+  .dot-run      { background: var(--run); }
+  .dot-brick    { background: var(--brick); }
+  .dot-strength { background: var(--strength); }
+  .dot-rest     { background: var(--border); }
+  .dot-race     { background: #e8a800; }
+
+  .day-title-wrap { flex: 1; }
+  .day-title {
+    font-size: 13px; font-weight: 500; line-height: 1.25;
+    color: var(--text);
+  }
+  .day-title.rest-title { color: var(--rest-text); font-weight: 300; font-style: italic; }
+  .day-title.race-title { color: #7a5400; }
+  .day-extra-badge {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    color: var(--strength); background: var(--strength-dim);
+    border: 1px solid rgba(122,106,26,0.15);
+    padding: 1px 6px; border-radius: 8px;
+    margin-top: 3px; display: inline-block;
+  }
+  .day-chevron { font-size: 9px; color: var(--muted); transition: transform 0.2s; flex-shrink: 0; }
+  .day-card.expanded .day-chevron { transform: rotate(180deg); }
+
+  /* ── WORKOUT BODY ── */
+  .day-body {
+    display: none; padding: 0 14px 14px;
+    border-top: 1px solid var(--border);
+  }
+  .day-card.expanded .day-body { display: block; }
+
+  .workout-text {
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    line-height: 1.7; color: #5a5040;
+    white-space: pre-wrap; padding: 12px 0 8px;
+  }
+  .strength-section {
+    margin-top: 10px; padding: 10px 12px;
+    background: var(--strength-dim);
+    border: 1px solid rgba(122,106,26,0.12);
+    border-radius: var(--radius-sm);
+  }
+  .strength-label {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    color: var(--strength); letter-spacing: 0.06em;
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+  .strength-text {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    line-height: 1.6; color: #6a5a20;
+    white-space: pre-wrap;
+  }
+
+  /* ── TODAY VIEW ── */
+  .today-section { padding: 20px 0 8px; }
+  .today-hero-label {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 0.08em; color: var(--accent);
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+
+  /* ── OVERVIEW ── */
+  .overview-section { padding: 20px 0 8px; }
+  .overview-title {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    letter-spacing: 0.08em; color: var(--muted);
+    text-transform: uppercase; margin-bottom: 12px;
+  }
+  .ov-row {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 9px 12px;
+    cursor: pointer; margin-bottom: 4px; transition: all 0.15s;
+  }
+  .ov-row:active { opacity: 0.8; }
+  .ov-row.current { border-color: var(--accent); background: var(--accent-dim); }
+  .ov-wk { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); width: 22px; flex-shrink: 0; }
+  .ov-dates { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); flex: 1; }
+  .ov-phase { font-size: 10px; padding: 2px 7px; border-radius: 10px; flex-shrink: 0; }
+  .ov-icons { font-size: 11px; flex-shrink: 0; width: 56px; text-align: right; color: var(--muted); }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(250,247,242,0.96);
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  }
+  .nav-btn {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 3px; padding: 5px 0;
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--muted); cursor: pointer; border: none; background: none;
+    transition: color 0.15s;
+  }
+  .nav-btn.active { color: var(--accent); }
+  .nav-icon { font-size: 17px; line-height: 1; }
+
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); font-size: 14px; font-style: italic; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="header-title">Sprint Tri Plan</div>
+    <div class="race-chip">🏁 Jul 12</div>
+  </div>
+  <div class="countdown" id="countdown">—</div>
+  <div class="today-sublabel" id="todaySub">—</div>
+</header>
+
+<div class="tab-bar" id="tabBar"></div>
+<main id="main"></main>
+
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="navToday" onclick="go('today')">
+    <span class="nav-icon">◎</span>TODAY
+  </button>
+  <button class="nav-btn" id="navWeek" onclick="go('week')">
+    <span class="nav-icon">▦</span>WEEK
+  </button>
+  <button class="nav-btn" id="navAll" onclick="go('all')">
+    <span class="nav-icon">≡</span>ALL
+  </button>
+</nav>
+
+<script>
+const RACE = new Date('2026-07-12');
+const START = new Date('2026-03-23');
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DNAMES = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const DABR   = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+const WKDABR = ['MON','TUE','WED','THU','FRI','SAT','SUN'];
+
+const PLAN = {"1": {"dates": "Mar 23\u201329", "phase": "Base", "run_sessions": 1, "recovery": false, "days": [{"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Full Body (20\u201325 min)", "body": "2\u20133 rounds, ~20\u201325 min:\n\u2022 12 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 30s plank\n\u2022 12 glute bridges\n\u2022 10 dumbbell rows (or resistance band)\n\u2022 15 calf raises\n\nRest 30\u201345s between exercises."}}, {"type": "rest", "title": "Rest", "body": ""}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Swim \u2013 Intro 900m (~25 min, 25m pool)", "body": "Warm-up: 200m easy freestyle (take breaks as needed).\n\nMain set: 6 \u00d7 100m with ~30s rest between each.\nFocus on: smooth strokes, breathing every 2-3 strokes, relaxed arms.\n\nCool-down: 100m easy.\n\nTotal: 900m. Don't rush \u2014 technique is more important than speed right now.", "type": "swim"}, {"title": "Rest Day (or Strength)", "body": "20\u201330 min full-body strength if you want an active recovery day.\n\nSuggested circuit (2\u20133 rounds):\n\u2022 10 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 20s plank\n\u2022 10 glute bridges\n\u2022 10 bent-over rows (light dumbbells or resistance band)", "type": "rest"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Lower + Core (20\u201325 min)", "body": "2\u20133 rounds, ~20 min:\n\u2022 15 squats\n\u2022 12 reverse lunges each leg\n\u2022 20 glute bridges\n\u2022 15 calf raises\n\u2022 30s plank\n\u2022 20 dead bugs (10 each side)\n\u2022 15 side-lying clams each side\n\nRest 30\u201345s between exercises."}}, {"title": "Walk/Run \u2013 20 min", "body": "Warm up: 3 min easy walk.\n\nMain: 6 rounds of\n\u2022 Run 1 min (easy, conversational)\n\u2022 Walk 2 min\n\nCool down: 2\u20133 min easy walk.\n\nKeep the run portions truly easy \u2014 you should be able to speak in full sentences.", "type": "run"}]}, "2": {"dates": "Mar 30\u2013Apr 5", "phase": "Base", "run_sessions": 1, "recovery": false, "days": [{"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Full Body (20\u201325 min)", "body": "2\u20133 rounds, ~20\u201325 min:\n\u2022 12 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 30s plank\n\u2022 12 glute bridges\n\u2022 10 dumbbell rows (or resistance band)\n\u2022 15 calf raises\n\nRest 30\u201345s between exercises."}}, {"type": "rest", "title": "Rest", "body": ""}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Swim \u2013 Building 900m (~25 min, 25m pool)", "body": "Warm-up: 200m easy freestyle.\n\nMain set: 6 \u00d7 100m with 20s rest.\nThis week: focus on your kick \u2014 not too big, steady flutter from the hip.\n\nCool-down: 100m easy.\n\nTotal: 900m.", "type": "swim"}, {"title": "Rest Day (or Strength)", "body": "20\u201330 min full-body strength if you want an active recovery day.\n\nSuggested circuit (2\u20133 rounds):\n\u2022 10 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 20s plank\n\u2022 10 glute bridges\n\u2022 10 bent-over rows (light dumbbells or resistance band)", "type": "rest"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Upper (20\u201325 min)", "body": "2\u20133 rounds, ~20 min:\n\u2022 12 push-ups (or incline)\n\u2022 10 dumbbell rows each side\n\u2022 15 lateral raises\n\u2022 10 tricep dips (chair)\n\u2022 15 band pull-aparts\n\u2022 10 shoulder press\n\nRest 30s between exercises."}}, {"title": "Walk/Run \u2013 25 min", "body": "Warm up: 3 min easy walk.\n\nMain: 8 rounds of\n\u2022 Run 2 min (easy, conversational)\n\u2022 Walk 1 min\n\nCool down: 2\u20133 min easy walk.\n\nKeep the run portions truly easy \u2014 you should be able to speak in full sentences.", "type": "run"}]}, "3": {"dates": "Apr 6\u201312", "phase": "Base", "run_sessions": 1, "recovery": false, "days": [{"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Full Body (20\u201325 min)", "body": "2\u20133 rounds, ~20\u201325 min:\n\u2022 12 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 30s plank\n\u2022 12 glute bridges\n\u2022 10 dumbbell rows (or resistance band)\n\u2022 15 calf raises\n\nRest 30\u201345s between exercises."}}, {"type": "rest", "title": "Rest", "body": ""}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Swim \u2013 Building 900m (~25 min, 25m pool)", "body": "Warm-up: 200m easy freestyle.\n\nMain set: 6 \u00d7 100m with 20s rest.\nThis week: work on your catch \u2014 reach forward, pull the water past your hip.\n\nCool-down: 100m easy.\n\nTotal: 900m.", "type": "swim"}, {"title": "Rest Day (or Strength)", "body": "20\u201330 min full-body strength if you want an active recovery day.\n\nSuggested circuit (2\u20133 rounds):\n\u2022 10 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 20s plank\n\u2022 10 glute bridges\n\u2022 10 bent-over rows (light dumbbells or resistance band)", "type": "rest"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Lower + Core (20\u201325 min)", "body": "2\u20133 rounds, ~20 min:\n\u2022 15 squats\n\u2022 12 reverse lunges each leg\n\u2022 20 glute bridges\n\u2022 15 calf raises\n\u2022 30s plank\n\u2022 20 dead bugs (10 each side)\n\u2022 15 side-lying clams each side\n\nRest 30\u201345s between exercises."}}, {"title": "Walk/Run \u2013 30 min", "body": "Warm up: 3 min easy walk.\n\nMain: 7 rounds of\n\u2022 Run 3 min (easy, conversational)\n\u2022 Walk 1 min\n\nCool down: 2\u20133 min easy walk.\n\nKeep the run portions truly easy \u2014 you should be able to speak in full sentences.", "type": "run"}]}, "4": {"dates": "Apr 13\u201319", "phase": "Base", "run_sessions": 2, "recovery": false, "days": [{"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Full Body (20\u201325 min)", "body": "2\u20133 rounds, ~20\u201325 min:\n\u2022 12 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 30s plank\n\u2022 12 glute bridges\n\u2022 10 dumbbell rows (or resistance band)\n\u2022 15 calf raises\n\nRest 30\u201345s between exercises."}}, {"title": "Swim \u2013 Technique 1000m (~28 min, 25m pool)", "body": "Warm-up: 200m easy freestyle.\n\nDrills: 4 \u00d7 50m catch-up drill (touch one thumb before the other arm pulls) + 25m easy swim after each.\n\nMain set: 4 \u00d7 100m easy, focus on long smooth strokes.\n\nCool-down: 100m easy.\n\nTotal: ~1,000m.", "type": "swim"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Swim \u2013 Sets 1200m (~33 min, 25m pool)", "body": "Warm-up: 200m easy.\n\nDrill: 4 \u00d7 50m fingertip-drag drill (drag fingertips along water surface on recovery).\n\nMain set: 6 \u00d7 100m with 20s rest.\nTry to make each 100m feel smooth and consistent.\n\nCool-down: 100m easy.\n\nTotal: ~1,200m.", "type": "swim"}, {"title": "Rest Day (or Strength)", "body": "20\u201330 min full-body strength if you want an active recovery day.\n\nSuggested circuit (2\u20133 rounds):\n\u2022 10 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 20s plank\n\u2022 10 glute bridges\n\u2022 10 bent-over rows (light dumbbells or resistance band)", "type": "rest"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Lower + Core (20\u201325 min)", "body": "2\u20133 rounds, ~20 min:\n\u2022 15 squats\n\u2022 12 reverse lunges each leg\n\u2022 20 glute bridges\n\u2022 15 calf raises\n\u2022 30s plank\n\u2022 20 dead bugs (10 each side)\n\u2022 15 side-lying clams each side\n\nRest 30\u201345s between exercises."}}, {"title": "Easy Run \u2013 30 min", "body": "Easy continuous run, 30 minutes.\n\nPace: fully conversational \u2014 slow enough to talk in complete sentences.\nWalk breaks are completely fine if needed.\n\nYou've earned continuous running! Keep it conversational.", "type": "run"}]}, "5": {"dates": "Apr 20\u201326", "phase": "Base", "run_sessions": 2, "recovery": false, "days": [{"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Full Body (20\u201325 min)", "body": "2\u20133 rounds, ~20\u201325 min:\n\u2022 12 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 30s plank\n\u2022 12 glute bridges\n\u2022 10 dumbbell rows (or resistance band)\n\u2022 15 calf raises\n\nRest 30\u201345s between exercises."}}, {"title": "Swim \u2013 Technique 1000m (~28 min, 25m pool)", "body": "Warm-up: 200m easy freestyle.\n\nDrills: 4 \u00d7 50m catch-up drill (touch one thumb before the other arm pulls) + 25m easy swim after each.\n\nMain set: 4 \u00d7 100m easy, focus on long smooth strokes.\n\nCool-down: 100m easy.\n\nTotal: ~1,000m.", "type": "swim"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Swim \u2013 Sets 1200m (~33 min, 25m pool)", "body": "Warm-up: 200m easy.\n\nDrill: 4 \u00d7 50m fingertip-drag drill (drag fingertips along water surface on recovery).\n\nMain set: 6 \u00d7 100m with 20s rest.\nTry to make each 100m feel smooth and consistent.\n\nCool-down: 100m easy.\n\nTotal: ~1,200m.", "type": "swim"}, {"title": "Rest Day (or Strength)", "body": "20\u201330 min full-body strength if you want an active recovery day.\n\nSuggested circuit (2\u20133 rounds):\n\u2022 10 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 20s plank\n\u2022 10 glute bridges\n\u2022 10 bent-over rows (light dumbbells or resistance band)", "type": "rest"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Upper (20\u201325 min)", "body": "2\u20133 rounds, ~20 min:\n\u2022 12 push-ups (or incline)\n\u2022 10 dumbbell rows each side\n\u2022 15 lateral raises\n\u2022 10 tricep dips (chair)\n\u2022 15 band pull-aparts\n\u2022 10 shoulder press\n\nRest 30s between exercises."}}, {"title": "Easy Run \u2013 35 min", "body": "Easy continuous run, 35 minutes.\n\nPace: fully conversational \u2014 slow enough to talk in complete sentences.\nWalk breaks are completely fine if needed.\n", "type": "run"}]}, "6": {"dates": "Apr 27\u2013May 3", "phase": "Base", "run_sessions": 2, "recovery": false, "days": [{"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Full Body (20\u201325 min)", "body": "2\u20133 rounds, ~20\u201325 min:\n\u2022 12 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 30s plank\n\u2022 12 glute bridges\n\u2022 10 dumbbell rows (or resistance band)\n\u2022 15 calf raises\n\nRest 30\u201345s between exercises."}}, {"title": "Swim \u2013 Technique 1000m (~28 min, 25m pool)", "body": "Warm-up: 200m easy freestyle.\n\nDrills: 4 \u00d7 50m catch-up drill (touch one thumb before the other arm pulls) + 25m easy swim after each.\n\nMain set: 4 \u00d7 100m easy, focus on long smooth strokes.\n\nCool-down: 100m easy.\n\nTotal: ~1,000m.", "type": "swim"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Swim \u2013 Sets 1200m (~33 min, 25m pool)", "body": "Warm-up: 200m easy.\n\nDrill: 4 \u00d7 50m fingertip-drag drill (drag fingertips along water surface on recovery).\n\nMain set: 6 \u00d7 100m with 20s rest.\nTry to make each 100m feel smooth and consistent.\n\nCool-down: 100m easy.\n\nTotal: ~1,200m.", "type": "swim"}, {"title": "Rest Day (or Strength)", "body": "20\u201330 min full-body strength if you want an active recovery day.\n\nSuggested circuit (2\u20133 rounds):\n\u2022 10 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 20s plank\n\u2022 10 glute bridges\n\u2022 10 bent-over rows (light dumbbells or resistance band)", "type": "rest"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Lower + Core (20\u201325 min)", "body": "2\u20133 rounds, ~20 min:\n\u2022 15 squats\n\u2022 12 reverse lunges each leg\n\u2022 20 glute bridges\n\u2022 15 calf raises\n\u2022 30s plank\n\u2022 20 dead bugs (10 each side)\n\u2022 15 side-lying clams each side\n\nRest 30\u201345s between exercises."}}, {"title": "Easy Run \u2013 40 min", "body": "Easy continuous run, 40 minutes.\n\nPace: fully conversational \u2014 slow enough to talk in complete sentences.\nWalk breaks are completely fine if needed.\n\nFinal week of 3 spin classes per week \u2014 outdoor rides start next week!", "type": "run"}]}, "7": {"dates": "May 4\u201310", "phase": "Build", "run_sessions": 2, "recovery": false, "days": [{"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Full Body (20\u201325 min)", "body": "2\u20133 rounds, ~20\u201325 min:\n\u2022 12 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 30s plank\n\u2022 12 glute bridges\n\u2022 10 dumbbell rows (or resistance band)\n\u2022 15 calf raises\n\nRest 30\u201345s between exercises."}}, {"title": "Easy Run \u2013 30 min", "body": "Easy continuous run, 30 minutes.\n\nPace: fully conversational \u2014 slow enough to talk in complete sentences.\nWalk breaks are completely fine if needed.\n\nWeekday run now that evenings are getting lighter.", "type": "run"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Swim \u2013 Sets 1200m (~33 min, 25m pool)", "body": "Warm-up: 200m easy.\n\nDrills: 4 \u00d7 50m side-kick drill (kick on your side, one arm extended).\n\nMain set: 6 \u00d7 100m with 20s rest.\n\nCool-down: 100m easy.\n\nTotal: ~1,200m.", "type": "swim"}, {"title": "Rest Day (or Strength)", "body": "20\u201330 min full-body strength if you want an active recovery day.\n\nSuggested circuit (2\u20133 rounds):\n\u2022 10 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 20s plank\n\u2022 10 glute bridges\n\u2022 10 bent-over rows (light dumbbells or resistance band)", "type": "rest"}, {"title": "Outdoor Ride \u2013 45 min", "body": "Easy to moderate outdoor road ride, approximately 45 minutes.\n\nFlat to rolling terrain \u2014 avoid big hills for now.\nFocus on steady pedaling and getting comfortable on the bike.\n\nFirst outdoor ride! Flat route, easy effort, focus on getting comfortable.", "type": "ride"}, {"title": "Longer Easy Run \u2013 40 min", "body": "Easy run, 40 minutes.\n\nThis is your longest run of the week \u2014 keep it easy the whole way.\nIf your legs feel heavy or your breathing gets hard, slow down or walk.\n", "type": "run"}]}, "8": {"dates": "May 11\u201317", "phase": "Build", "run_sessions": 2, "recovery": false, "days": [{"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Full Body (20\u201325 min)", "body": "2\u20133 rounds, ~20\u201325 min:\n\u2022 12 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 30s plank\n\u2022 12 glute bridges\n\u2022 10 dumbbell rows (or resistance band)\n\u2022 15 calf raises\n\nRest 30\u201345s between exercises."}}, {"title": "Swim \u2013 Easy 900m (~25 min, 25m pool)", "body": "Warm-up: 200m easy.\n\nEasy swim: 6 \u00d7 100m with 30s rest \u2014 keep it gentle.\n\nCool-down: 100m.\n\nTotal: 900m. Recovery swim \u2014 this one should feel easy.", "type": "swim"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Swim \u2013 Building 1200m (~33 min, 25m pool)", "body": "Warm-up: 250m easy.\n\nMain set: 4 \u00d7 200m with 30s rest.\nAim for a steady, sustainable effort on each 200m.\n\nCool-down: 150m easy.\n\nTotal: ~1,200m.", "type": "swim"}, {"title": "Rest Day (or Strength)", "body": "20\u201330 min full-body strength if you want an active recovery day.\n\nSuggested circuit (2\u20133 rounds):\n\u2022 10 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 20s plank\n\u2022 10 glute bridges\n\u2022 10 bent-over rows (light dumbbells or resistance band)", "type": "rest"}, {"title": "Outdoor Ride \u2013 50 min", "body": "Easy to moderate outdoor road ride, approximately 50 minutes.\n\nFlat to rolling terrain \u2014 avoid big hills for now.\nFocus on steady pedaling and getting comfortable on the bike.\n\nBuilding outdoor ride time. Find a 45\u201350 min loop near you.", "type": "ride"}, {"title": "Longer Easy Run \u2013 45 min", "body": "Easy run, 45 minutes.\n\nThis is your longest run of the week \u2014 keep it easy the whole way.\nIf your legs feel heavy or your breathing gets hard, slow down or walk.\n", "type": "run"}]}, "9": {"dates": "May 18\u201324", "phase": "Build", "run_sessions": 3, "recovery": false, "days": [{"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Full Body (20\u201325 min)", "body": "2\u20133 rounds, ~20\u201325 min:\n\u2022 12 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 30s plank\n\u2022 12 glute bridges\n\u2022 10 dumbbell rows (or resistance band)\n\u2022 15 calf raises\n\nRest 30\u201345s between exercises."}}, {"title": "Swim \u2013 Easy 900m (~25 min, 25m pool)", "body": "Warm-up: 200m easy.\n\nEasy swim: 6 \u00d7 100m with 30s rest \u2014 keep it gentle.\n\nCool-down: 100m.\n\nTotal: 900m. Recovery swim \u2014 this one should feel easy.", "type": "swim"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Swim \u2013 Building 1200m (~33 min, 25m pool)", "body": "Warm-up: 250m easy.\n\nMain set: 4 \u00d7 200m with 30s rest.\nAim for a steady, sustainable effort on each 200m.\n\nCool-down: 150m easy.\n\nTotal: ~1,200m.", "type": "swim"}, {"title": "Rest Day (or Strength)", "body": "20\u201330 min full-body strength if you want an active recovery day.\n\nSuggested circuit (2\u20133 rounds):\n\u2022 10 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 20s plank\n\u2022 10 glute bridges\n\u2022 10 bent-over rows (light dumbbells or resistance band)", "type": "rest"}, {"title": "Brick Workout \u2013 45 min ride + 15 min run", "body": "Do these back-to-back with no rest between them.\n\n1. Ride: 45 min on your bike (outdoor or spin) at moderate effort.\n\n2. Immediately put on your running shoes and run for 15 min easy.\n\nThe first few minutes of the run will feel strange and heavy \u2014 that's normal and it fades. Don't worry about pace, just keep moving forward.", "type": "brick"}, {"title": "Longer Easy Run \u2013 45 min", "body": "Easy run, 45 minutes.\n\nThis is your longest run of the week \u2014 keep it easy the whole way.\nIf your legs feel heavy or your breathing gets hard, slow down or walk.\n", "type": "run"}]}, "10": {"dates": "May 25\u201331", "phase": "Build", "run_sessions": 3, "recovery": false, "days": [{"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Full Body (20\u201325 min)", "body": "2\u20133 rounds, ~20\u201325 min:\n\u2022 12 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 30s plank\n\u2022 12 glute bridges\n\u2022 10 dumbbell rows (or resistance band)\n\u2022 15 calf raises\n\nRest 30\u201345s between exercises."}}, {"title": "Swim \u2013 Sets 1200m (~33 min, 25m pool)", "body": "Warm-up: 200m easy.\n\nMain set: 3 \u00d7 (4 \u00d7 100m with 15s rest), 45s between sets.\n\nCool-down: 200m easy.\n\nTotal: ~1,400m. Focus on relaxing between intervals \u2014 don't grip the lane rope!", "type": "swim"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Swim \u2013 Building 1200m (~33 min, 25m pool)", "body": "Warm-up: 250m easy.\n\nMain set: 4 \u00d7 200m with 30s rest.\nAim for a steady, sustainable effort on each 200m.\n\nCool-down: 150m easy.\n\nTotal: ~1,200m.", "type": "swim"}, {"title": "Rest Day (or Strength)", "body": "20\u201330 min full-body strength if you want an active recovery day.\n\nSuggested circuit (2\u20133 rounds):\n\u2022 10 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 20s plank\n\u2022 10 glute bridges\n\u2022 10 bent-over rows (light dumbbells or resistance band)", "type": "rest"}, {"title": "Outdoor Ride \u2013 55 min", "body": "Easy to moderate outdoor road ride, approximately 55 minutes.\n\nFlat to rolling terrain \u2014 avoid big hills for now.\nFocus on steady pedaling and getting comfortable on the bike.\n\nLonger outdoor ride this week. Aim for ~12\u201314 miles if possible.", "type": "ride"}, {"title": "Longer Easy Run \u2013 50 min", "body": "Easy run, 50 minutes.\n\nThis is your longest run of the week \u2014 keep it easy the whole way.\nIf your legs feel heavy or your breathing gets hard, slow down or walk.\n", "type": "run"}]}, "11": {"dates": "Jun 1\u20137", "phase": "Build", "run_sessions": 3, "recovery": false, "days": [{"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin", "extra": {"title": "Strength \u2013 Full Body (20\u201325 min)", "body": "2\u20133 rounds, ~20\u201325 min:\n\u2022 12 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 30s plank\n\u2022 12 glute bridges\n\u2022 10 dumbbell rows (or resistance band)\n\u2022 15 calf raises\n\nRest 30\u201345s between exercises."}}, {"title": "Swim \u2013 Sets 1200m (~33 min, 25m pool)", "body": "Warm-up: 200m easy.\n\nMain set: 3 \u00d7 (4 \u00d7 100m with 15s rest), 45s between sets.\n\nCool-down: 200m easy.\n\nTotal: ~1,400m. Focus on relaxing between intervals \u2014 don't grip the lane rope!", "type": "swim"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Swim \u2013 Race Prep 1400m (~38 min, 25m pool)", "body": "Warm-up: 300m easy.\n\nMain set: 3 \u00d7 200m with 30s rest.\n\nRace sim: 1 \u00d7 500m continuous easy \u2014 practice swimming without stopping.\nThe race is ~535m, so this gets you very close.\n\nCool-down: 100m easy.\n\nTotal: ~1,400m.", "type": "swim"}, {"title": "Rest Day (or Strength)", "body": "20\u201330 min full-body strength if you want an active recovery day.\n\nSuggested circuit (2\u20133 rounds):\n\u2022 10 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 20s plank\n\u2022 10 glute bridges\n\u2022 10 bent-over rows (light dumbbells or resistance band)", "type": "rest"}, {"title": "Brick Workout \u2013 50 min ride + 20 min run", "body": "Do these back-to-back with no rest between them.\n\n1. Ride: 50 min on your bike (outdoor or spin) at moderate effort.\n\n2. Immediately put on your running shoes and run for 20 min easy.\n\nThe first few minutes of the run will feel strange and heavy \u2014 that's normal and it fades. Don't worry about pace, just keep moving forward.", "type": "brick"}, {"title": "Longer Easy Run \u2013 55 min", "body": "Easy run, 55 minutes.\n\nThis is your longest run of the week \u2014 keep it easy the whole way.\nIf your legs feel heavy or your breathing gets hard, slow down or walk.\n", "type": "run"}]}, "12": {"dates": "Jun 8\u201314", "phase": "Build", "run_sessions": 2, "recovery": true, "days": [{"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Swim \u2013 Easy 900m (~25 min, 25m pool)", "body": "Warm-up: 200m easy.\n\nEasy swim: 6 \u00d7 100m with 30s rest \u2014 keep it gentle.\n\nCool-down: 100m.\n\nTotal: 900m. Recovery swim \u2014 this one should feel easy.", "type": "swim"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"type": "rest", "title": "Rest", "body": ""}, {"title": "Rest Day (or Strength)", "body": "20\u201330 min full-body strength if you want an active recovery day.\n\nSuggested circuit (2\u20133 rounds):\n\u2022 10 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 20s plank\n\u2022 10 glute bridges\n\u2022 10 bent-over rows (light dumbbells or resistance band)", "type": "rest"}, {"title": "Outdoor Ride \u2013 40 min", "body": "Easy to moderate outdoor road ride, approximately 40 minutes.\n\nFlat to rolling terrain \u2014 avoid big hills for now.\nFocus on steady pedaling and getting comfortable on the bike.\n\nEasy outdoor ride \u2014 recovery week.", "type": "ride"}, {"title": "Easy Run \u2013 40 min", "body": "Easy continuous run, 40 minutes.\n\nPace: fully conversational \u2014 slow enough to talk in complete sentences.\nWalk breaks are completely fine if needed.\n\nEasy recovery run \u2014 no pushing.", "type": "run"}]}, "13": {"dates": "Jun 15\u201321", "phase": "Race Prep", "run_sessions": 3, "recovery": false, "days": [{"title": "Spin Class \u2013 45 min (push it)", "body": "Your regular spin class.\nThis one you can work harder \u2014 aim for some sustained effort in the main set.", "type": "spin", "extra": {"title": "Strength \u2013 Core (20\u201325 min)", "body": "2 rounds, ~15\u201320 min:\n\u2022 30s plank\n\u2022 20 dead bugs\n\u2022 15 bird dogs each side\n\u2022 20 glute bridges\n\u2022 30s side plank each side\n\u2022 15 hollow body rocks\n\nRest 30s between exercises."}}, {"title": "Swim \u2013 Race Prep 1400m (~38 min, 25m pool)", "body": "Warm-up: 300m easy.\n\nDrills: 2 \u00d7 50m fist drill (swim with closed fists to feel the forearm).\n\nMain set: 3 \u00d7 200m with 30s rest.\n\nFinish: 2 \u00d7 100m at race effort with 30s rest.\n\nCool-down: 200m easy.\n\nTotal: ~1,400m.", "type": "swim"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Easy Run \u2013 40 min", "body": "Easy continuous run, 40 minutes.\n\nPace: fully conversational \u2014 slow enough to talk in complete sentences.\nWalk breaks are completely fine if needed.\n\nWeekday run \u2014 strong base now!", "type": "run"}, {"title": "Rest Day (or Strength)", "body": "20\u201330 min full-body strength if you want an active recovery day.\n\nSuggested circuit (2\u20133 rounds):\n\u2022 10 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 20s plank\n\u2022 10 glute bridges\n\u2022 10 bent-over rows (light dumbbells or resistance band)", "type": "rest"}, {"title": "Brick Workout \u2013 50 min ride + 20 min run", "body": "Do these back-to-back with no rest between them.\n\n1. Ride: 50 min on your bike (outdoor or spin) at moderate effort.\n\n2. Immediately put on your running shoes and run for 20 min easy.\n\nThe first few minutes of the run will feel strange and heavy \u2014 that's normal and it fades. Don't worry about pace, just keep moving forward.", "type": "brick"}, {"title": "Longer Easy Run \u2013 55 min", "body": "Easy run, 55 minutes.\n\nThis is your longest run of the week \u2014 keep it easy the whole way.\nIf your legs feel heavy or your breathing gets hard, slow down or walk.\n", "type": "run"}]}, "14": {"dates": "Jun 22\u201328", "phase": "Race Prep", "run_sessions": 3, "recovery": false, "days": [{"title": "Spin Class \u2013 45 min (push it)", "body": "Your regular spin class.\nThis one you can work harder \u2014 aim for some sustained effort in the main set.", "type": "spin", "extra": {"title": "Strength \u2013 Core (20\u201325 min)", "body": "2 rounds, ~15\u201320 min:\n\u2022 30s plank\n\u2022 20 dead bugs\n\u2022 15 bird dogs each side\n\u2022 20 glute bridges\n\u2022 30s side plank each side\n\u2022 15 hollow body rocks\n\nRest 30s between exercises."}}, {"title": "Swim \u2013 Race Prep 1400m (~38 min, 25m pool)", "body": "Warm-up: 300m easy.\n\nDrills: 2 \u00d7 50m fist drill (swim with closed fists to feel the forearm).\n\nMain set: 3 \u00d7 200m with 30s rest.\n\nFinish: 2 \u00d7 100m at race effort with 30s rest.\n\nCool-down: 200m easy.\n\nTotal: ~1,400m.", "type": "swim"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Easy Run \u2013 40 min", "body": "Easy continuous run, 40 minutes.\n\nPace: fully conversational \u2014 slow enough to talk in complete sentences.\nWalk breaks are completely fine if needed.\n", "type": "run"}, {"title": "Rest Day (or Strength)", "body": "20\u201330 min full-body strength if you want an active recovery day.\n\nSuggested circuit (2\u20133 rounds):\n\u2022 10 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 20s plank\n\u2022 10 glute bridges\n\u2022 10 bent-over rows (light dumbbells or resistance band)", "type": "rest"}, {"title": "Brick Workout \u2013 55 min ride + 25 min run", "body": "Do these back-to-back with no rest between them.\n\n1. Ride: 55 min on your bike (outdoor or spin) at moderate effort.\n\n2. Immediately put on your running shoes and run for 25 min easy.\n\nThe first few minutes of the run will feel strange and heavy \u2014 that's normal and it fades. Don't worry about pace, just keep moving forward.", "type": "brick"}, {"title": "Longer Easy Run \u2013 55 min", "body": "Easy run, 55 minutes.\n\nThis is your longest run of the week \u2014 keep it easy the whole way.\nIf your legs feel heavy or your breathing gets hard, slow down or walk.\n", "type": "run"}]}, "15": {"dates": "Jun 29\u2013Jul 5", "phase": "Taper", "run_sessions": 2, "recovery": false, "days": [{"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Swim \u2013 Taper 950m (~26 min, 25m pool)", "body": "Warm-up: 200m easy.\n\nMain set: 4 \u00d7 100m with 30s rest.\n\nRace-pace efforts: 4 \u00d7 50m at race effort, 30s rest.\n\nCool-down: 150m easy.\n\nTotal: ~950m. Keep it light \u2014 you're saving energy for race day.", "type": "swim"}, {"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Easy Run \u2013 30 min", "body": "Easy continuous run, 30 minutes.\n\nPace: fully conversational \u2014 slow enough to talk in complete sentences.\nWalk breaks are completely fine if needed.\n\nTaper run \u2014 keep it easy, legs should feel fresh.", "type": "run"}, {"title": "Rest Day (or Strength)", "body": "20\u201330 min full-body strength if you want an active recovery day.\n\nSuggested circuit (2\u20133 rounds):\n\u2022 10 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 20s plank\n\u2022 10 glute bridges\n\u2022 10 bent-over rows (light dumbbells or resistance band)", "type": "rest"}, {"title": "Outdoor Ride \u2013 40 min", "body": "Easy to moderate outdoor road ride, approximately 40 minutes.\n\nFlat to rolling terrain \u2014 avoid big hills for now.\nFocus on steady pedaling and getting comfortable on the bike.\n\nEasy outdoor spin \u2014 just keeping the legs moving.", "type": "ride"}, {"title": "Easy Run \u2013 25 min", "body": "Easy continuous run, 25 minutes.\n\nPace: fully conversational \u2014 slow enough to talk in complete sentences.\nWalk breaks are completely fine if needed.\n\nShort taper run. Trust the training!", "type": "run"}]}, "16": {"dates": "Jul 6\u201312", "phase": "Race Week", "run_sessions": 1, "recovery": false, "days": [{"title": "Spin Class \u2013 45 min", "body": "Your regular spin class.\nFocus on form and cadence, not max effort \u2014 you have a lot of training ahead.", "type": "spin"}, {"title": "Swim \u2013 Race Week 800m (~22 min, 25m pool)", "body": "Warm-up: 200m easy.\n\nMain set: 3 \u00d7 100m with 30s rest.\n\nOpeners: 4 \u00d7 50m at race effort, 30s rest.\n\nCool-down: 100m easy.\n\nTotal: ~800m. Just staying loose \u2014 no fatigue allowed this week.", "type": "swim"}, {"type": "rest", "title": "Rest", "body": ""}, {"title": "Easy Run \u2013 20 min", "body": "Easy continuous run, 20 minutes.\n\nPace: fully conversational \u2014 slow enough to talk in complete sentences.\nWalk breaks are completely fine if needed.\n\nEasy short run \u2014 just staying loose.", "type": "run"}, {"title": "Rest Day (or Strength)", "body": "20\u201330 min full-body strength if you want an active recovery day.\n\nSuggested circuit (2\u20133 rounds):\n\u2022 10 squats\n\u2022 10 push-ups\n\u2022 10 reverse lunges (each leg)\n\u2022 20s plank\n\u2022 10 glute bridges\n\u2022 10 bent-over rows (light dumbbells or resistance band)", "type": "rest"}, {"title": "Race Eve Shakeout \u2013 10 min", "body": "Very easy 10-minute jog or brisk walk.\n\nJust to loosen the legs. This is not a workout.", "type": "run"}, {"title": "\ud83c\udfc1 RACE DAY \u2013 Sprint Triathlon", "body": "Jul 12, 2026\n\nGood luck! Trust your training.", "type": "race"}]}};
+
+function today(){ const d=new Date(); return new Date(d.getFullYear(),d.getMonth(),d.getDate()); }
+function daysToRace(){ return Math.ceil((RACE-today())/86400000); }
+function weekNum(d){ return Math.floor((d-START)/604800000)+1; }
+function dowIndex(d){ return (d.getDay()+6)%7; } // 0=Mon..6=Sun
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function phaseClass(p){ return 'phase-'+p.replace(/ /g,'-'); }
+
+const TYPE_ICON = {spin:'🚴',ride:'🚵',swim:'🏊',run:'🏃',brick:'⚡',strength:'💪',rest:'—',race:'🏁'};
+const DOT_CLASS = {spin:'dot-spin',ride:'dot-ride',swim:'dot-swim',run:'dot-run',brick:'dot-brick',strength:'dot-strength',rest:'dot-rest',race:'dot-race'};
+
+function cardHtml(day, dayIdx, isToday, wk){
+  const hasBody = day.body && day.body.trim();
+  const hasExtra = day.extra && day.extra.body;
+  const hasContent = hasBody || hasExtra;
+  const id = `c${wk}_${dayIdx}`;
+  const abbr = WKDABR[dayIdx];
+  const restType = day.type === 'rest';
+  const raceType = day.type === 'race';
+
+  let extraBadge = hasExtra ? `<div class="day-extra-badge">+ strength</div>` : '';
+
+  return `<div class="day-card type-${day.type}${isToday?' today-card':''}${!hasContent?' no-expand':''}"
+    id="${id}" onclick="${hasContent?`tog('${id}')`:''}" >
+    <div class="day-header">
+      <div class="day-abbr${isToday?' is-today':''}">${abbr}</div>
+      <div class="day-dot ${DOT_CLASS[day.type]||'dot-rest'}"></div>
+      <div class="day-title-wrap">
+        <div class="day-title${restType?' rest-title':''}${raceType?' race-title':''}">${esc(day.title)}</div>
+        ${extraBadge}
+      </div>
+      ${hasContent?'<div class="day-chevron">▼</div>':''}
+    </div>
+    ${hasContent?`<div class="day-body">
+      ${hasBody?`<div class="workout-text">${esc(day.body)}</div>`:''}
+      ${hasExtra?`<div class="strength-section">
+        <div class="strength-label">+ Strength after</div>
+        <div class="strength-text">${esc(day.extra.body)}</div>
+      </div>`:''}
+    </div>`:''}
+  </div>`;
+}
+
+function tog(id){
+  const el=document.getElementById(id);
+  if(el) el.classList.toggle('expanded');
+}
+
+// ── views ─────────────────────────────────────────────────────────
+let view='today', activeWk=null;
+
+function go(v){ 
+  view=v;
+  ['today','week','all'].forEach(x=>{
+    document.getElementById('nav'+x[0].toUpperCase()+x.slice(1)).classList.toggle('active',x===v);
+  });
+  render();
+  if(v==='week' && activeWk) scrollTab(activeWk);
+}
+
+function render(){
+  const m=document.getElementById('main');
+  if(view==='today')  m.innerHTML=renderToday();
+  else if(view==='week') m.innerHTML=renderWeek(activeWk||curWk());
+  else m.innerHTML=renderAll();
+}
+
+function curWk(){ return Math.max(1,Math.min(16,weekNum(today()))); }
+
+function renderToday(){
+  const t=today();
+  const wk=weekNum(t);
+  if(wk<1||wk>16) return `<div class="today-section"><div class="empty-state">${wk<1?'Plan starts Mar 23 🌱':'Plan complete! Hope race day was amazing 🏁'}</div></div>`;
+  const data=PLAN[String(wk)];
+  const dow=dowIndex(t);
+  const day=data.days[dow];
+  const dn=DNAMES[t.getDay()];
+  const restOfWeek=data.days.map((d,i)=>i!==dow?cardHtml(d,i,false,wk):'').join('');
+
+  return `<div class="today-section">
+    <div class="today-hero-label">${dn}, ${MONTHS[t.getMonth()]} ${t.getDate()} · Week ${wk}</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+      <span class="phase-tag ${phaseClass(data.phase)}">${data.phase}</span>
+      ${data.recovery?'<span class="recovery-badge">recovery week</span>':''}
+    </div>
+    <div class="day-grid">${cardHtml(day,dow,true,wk)}</div>
+    <div style="margin-top:20px;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">Rest of this week</div>
+      <div class="day-grid">${restOfWeek}</div>
+    </div>
+  </div>`;
+}
+
+function renderWeek(wk){
+  activeWk=wk;
+  const data=PLAN[String(wk)];
+  if(!data) return '';
+  const t=today();
+  const tw=weekNum(t); const td=dowIndex(t);
+  return `<div class="week-section">
+    <div class="week-header">
+      <div>
+        <div class="week-num-big">Week ${wk}</div>
+        <div class="week-dates-small">${data.dates}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
+        <span class="phase-tag ${phaseClass(data.phase)}">${data.phase}</span>
+        ${data.recovery?'<span class="recovery-badge">recovery</span>':''}
+      </div>
+    </div>
+    <div class="day-grid">
+      ${data.days.map((d,i)=>cardHtml(d,i,wk===tw&&i===td,wk)).join('')}
+    </div>
+  </div>`;
+}
+
+function renderAll(){
+  const t=today(); const cw=weekNum(t);
+  return `<div class="overview-section">
+    <div class="overview-title">16-Week Overview</div>
+    ${Object.entries(PLAN).map(([wk,data])=>{
+      const w=parseInt(wk);
+      const types=[...new Set(data.days.map(d=>d.type))].filter(t=>t!=='rest');
+      const icons=types.map(t=>TYPE_ICON[t]||'').join('');
+      return `<div class="ov-row${w===cw?' current':''}" onclick="activeWk=${w};go('week')">
+        <div class="ov-wk">${w}</div>
+        <div class="ov-dates">${data.dates}</div>
+        <span class="ov-phase ${phaseClass(data.phase)}">${data.phase}</span>
+        <div class="ov-icons">${icons}</div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+// ── header ────────────────────────────────────────────────────────
+function updateHeader(){
+  const d=daysToRace();
+  const t=today();
+  document.getElementById('countdown').innerHTML =
+    d<=0 ? 'Race day! 🏁' :
+    d===1 ? '<span>1</span> day to go' :
+    `<span>${d}</span> days to race`;
+  document.getElementById('todaySub').textContent =
+    `${DNAMES[t.getDay()]}, ${MONTHS[t.getMonth()]} ${t.getDate()}`;
+}
+
+// ── tab bar ───────────────────────────────────────────────────────
+function buildTabs(){
+  const cw=curWk();
+  document.getElementById('tabBar').innerHTML=
+    Object.keys(PLAN).map(wk=>{
+      const w=parseInt(wk);
+      const data=PLAN[wk];
+      return `<div class="tab${w===cw?' today-tab':''}${data.recovery?' recovery-tab':''}" id="tab${w}" onclick="activeWk=${w};go('week')">${w}</div>`;
+    }).join('');
+}
+
+function scrollTab(wk){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  const el=document.getElementById('tab'+wk);
+  if(el){ el.classList.add('active'); el.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'}); }
+}
+
+updateHeader(); buildTabs(); render();
+</script>
+</body>
+</html>
