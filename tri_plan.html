@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Tri Plan · Jul 12</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f11;
+    --surface: #18181c;
+    --surface2: #222228;
+    --border: #2e2e38;
+    --text: #e8e8ed;
+    --muted: #7c7c8a;
+    --accent: #c8f060;
+    --accent-dim: rgba(200,240,96,0.12);
+    --run: #60b4f0;
+    --run-dim: rgba(96,180,240,0.12);
+    --swim: #60e4c0;
+    --swim-dim: rgba(96,228,192,0.12);
+    --ride: #f0a860;
+    --ride-dim: rgba(240,168,96,0.12);
+    --brick: #f06090;
+    --brick-dim: rgba(240,96,144,0.12);
+    --rest: #3a3a44;
+    --rest-text: #5a5a6a;
+    --race: #f0e060;
+    --race-dim: rgba(240,224,96,0.15);
+    --phase-base1: #1e2535;
+    --phase-base2: #1a2820;
+    --phase-build1: #2a1e18;
+    --phase-build2: #221a2e;
+    --phase-taper: #2a2818;
+    --phase-race: #2a2610;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(15,15,17,0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px 12px;
+  }
+  .header-top { display: flex; align-items: center; justify-content: space-between; }
+  .header-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px; font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .race-chip {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; font-weight: 500;
+    color: var(--race);
+    background: var(--race-dim);
+    border: 1px solid rgba(240,224,96,0.25);
+    padding: 3px 9px; border-radius: 20px;
+    letter-spacing: 0.04em;
+  }
+  .countdown {
+    margin-top: 6px;
+    font-size: 22px; font-weight: 700;
+    color: var(--text); letter-spacing: -0.02em;
+  }
+  .countdown span { color: var(--accent); }
+  .today-label {
+    font-size: 12px; color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-top: 1px;
+  }
+
+  /* ── TABS ── */
+  .tab-bar {
+    display: flex; gap: 6px;
+    padding: 12px 20px 0;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab {
+    flex-shrink: 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; font-weight: 500;
+    padding: 6px 12px; border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  .tab.active {
+    background: var(--accent);
+    color: #0f0f11;
+    border-color: var(--accent);
+    font-weight: 700;
+  }
+  .tab.recovery-tab { border-color: #3a3a44; }
+  .tab.today-tab {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  /* ── MAIN ── */
+  main { padding: 0 16px; }
+
+  /* ── TODAY HERO ── */
+  .today-section { padding: 20px 0 8px; }
+  .today-header {
+    display: flex; align-items: baseline; gap: 8px;
+    margin-bottom: 12px;
+  }
+  .today-day-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.08em;
+    color: var(--accent); text-transform: uppercase;
+  }
+  .today-date-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--muted);
+  }
+
+  /* ── WEEK VIEW ── */
+  .week-section { padding: 20px 0 8px; }
+  .week-header {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  .week-meta {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .week-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 22px; font-weight: 500;
+    color: var(--text); letter-spacing: -0.02em;
+  }
+  .week-dates {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--muted);
+  }
+  .week-phase {
+    font-size: 11px; font-weight: 500;
+    padding: 3px 9px; border-radius: 20px;
+    letter-spacing: 0.03em;
+  }
+  .week-run-total {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .week-run-total span { color: var(--run); }
+
+  .phase-Base-I   { background: var(--phase-base1); color: #7ab0f0; border: 1px solid rgba(96,148,240,0.2); }
+  .phase-Base-II  { background: var(--phase-base2); color: #70d4a0; border: 1px solid rgba(80,204,140,0.2); }
+  .phase-Build-I  { background: var(--phase-build1); color: #f0b070; border: 1px solid rgba(240,160,80,0.2); }
+  .phase-Build-II { background: var(--phase-build2); color: #c090f0; border: 1px solid rgba(180,120,240,0.2); }
+  .phase-Taper    { background: var(--phase-taper); color: #e0d870; border: 1px solid rgba(220,210,80,0.2); }
+  .phase-Race-Week{ background: var(--phase-race); color: var(--race); border: 1px solid rgba(240,224,96,0.3); }
+  .recovery-badge {
+    font-size: 10px; font-weight: 500;
+    padding: 2px 7px; border-radius: 10px;
+    background: #2a2a30; color: var(--muted);
+    border: 1px solid var(--border);
+    letter-spacing: 0.04em;
+  }
+
+  /* ── DAY CARDS ── */
+  .day-grid {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .day-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+  }
+  .day-card:active { transform: scale(0.99); opacity: 0.9; }
+  .day-card.expanded { border-color: var(--surface2); }
+  .day-card.today-card {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent-dim), 0 4px 20px rgba(200,240,96,0.08);
+  }
+
+  .day-card-header {
+    display: flex; align-items: center;
+    padding: 12px 14px;
+    gap: 12px;
+  }
+
+  .day-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%; flex-shrink: 0;
+  }
+  .dot-run   { background: var(--run); }
+  .dot-swim  { background: var(--swim); }
+  .dot-ride  { background: var(--ride); }
+  .dot-brick { background: var(--brick); }
+  .dot-rest  { background: var(--rest); }
+  .dot-race  { background: var(--race); }
+
+  .day-label-col { flex-shrink: 0; width: 32px; }
+  .day-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; font-weight: 500;
+    color: var(--muted); letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .day-label.today-label-day { color: var(--accent); }
+
+  .day-title {
+    font-size: 13px; font-weight: 500;
+    color: var(--text); line-height: 1.3;
+    flex: 1;
+  }
+  .day-title.rest-title { color: var(--rest-text); font-weight: 300; font-style: italic; }
+  .day-title.race-title { color: var(--race); }
+
+  .day-chevron {
+    font-size: 10px; color: var(--muted);
+    transition: transform 0.2s ease; flex-shrink: 0;
+  }
+  .day-card.expanded .day-chevron { transform: rotate(180deg); }
+  .day-card.no-expand .day-chevron { display: none; }
+
+  /* type accent stripe */
+  .day-card::before {
+    content: ''; position: absolute;
+    left: 0; top: 0; bottom: 0; width: 3px;
+    border-radius: 14px 0 0 14px;
+  }
+  .type-run::before    { background: var(--run); }
+  .type-swim::before   { background: var(--swim); }
+  .type-ride::before   { background: var(--ride); }
+  .type-brick::before  { background: var(--brick); }
+  .type-rest::before   { background: var(--border); }
+  .type-race::before   { background: var(--race); }
+
+  /* ── WORKOUT BODY ── */
+  .day-body {
+    display: none;
+    padding: 0 14px 14px 14px;
+    border-top: 1px solid var(--border);
+    margin-top: 0;
+  }
+  .day-card.expanded .day-body { display: block; }
+
+  .workout-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px; line-height: 1.65;
+    color: #b8b8c8;
+    white-space: pre-wrap;
+    padding: 12px 0 10px;
+  }
+  .workout-text .section-header {
+    color: var(--text); font-weight: 500;
+    display: block; margin-top: 4px;
+  }
+  .workout-text .interval-line {
+    color: #c8d8f0; display: block; padding-left: 4px;
+  }
+
+  .copy-btn {
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; font-weight: 500;
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid rgba(200,240,96,0.2);
+    padding: 8px 14px; border-radius: 20px;
+    cursor: pointer; width: 100%;
+    justify-content: center;
+    margin-top: 4px;
+    transition: all 0.15s ease;
+    letter-spacing: 0.04em;
+    -webkit-appearance: none;
+  }
+  .copy-btn:active { background: rgba(200,240,96,0.22); }
+  .copy-btn.copied {
+    color: var(--swim); background: rgba(96,228,192,0.12);
+    border-color: rgba(96,228,192,0.25);
+  }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(15,15,17,0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border);
+    display: flex;
+    padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+  }
+  .nav-btn {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 3px;
+    padding: 6px 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px; letter-spacing: 0.06em;
+    color: var(--muted); cursor: pointer;
+    text-transform: uppercase;
+    border: none; background: none;
+    transition: color 0.15s;
+  }
+  .nav-btn.active { color: var(--accent); }
+  .nav-icon { font-size: 18px; line-height: 1; }
+
+  /* ── OVERVIEW ── */
+  .overview-section { padding: 20px 0 8px; }
+  .overview-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; letter-spacing: 0.08em;
+    color: var(--muted); text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .overview-grid {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .overview-row {
+    display: flex; align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .overview-row:active { opacity: 0.8; }
+  .overview-row.current-week {
+    border-color: var(--accent);
+    background: var(--accent-dim);
+  }
+  .overview-row.recovery-week { opacity: 0.8; }
+  .ov-wk {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; font-weight: 500;
+    color: var(--muted); width: 24px; flex-shrink: 0;
+  }
+  .ov-dates {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; color: var(--muted);
+    flex: 1;
+  }
+  .ov-phase {
+    font-size: 10px; font-weight: 500;
+    padding: 2px 7px; border-radius: 10px;
+    flex-shrink: 0;
+  }
+  .ov-mi {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px; color: var(--run);
+    flex-shrink: 0; width: 44px; text-align: right;
+  }
+  .ov-icons {
+    font-size: 12px; flex-shrink: 0; width: 40px; text-align: right;
+  }
+
+  /* ── EMPTY ── */
+  .empty-state {
+    text-align: center; padding: 60px 20px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace; font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="header-title">Tri Training</div>
+    <div class="race-chip">🏁 Jul 12</div>
+  </div>
+  <div class="countdown" id="countdown">Loading...</div>
+  <div class="today-label" id="todayLabel">Loading...</div>
+</header>
+
+<div class="tab-bar" id="tabBar"></div>
+
+<main id="mainContent"></main>
+
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="navToday" onclick="showView('today')">
+    <span class="nav-icon">◎</span>TODAY
+  </button>
+  <button class="nav-btn" id="navWeek" onclick="showView('week')">
+    <span class="nav-icon">▦</span>WEEK
+  </button>
+  <button class="nav-btn" id="navAll" onclick="showView('all')">
+    <span class="nav-icon">≡</span>ALL
+  </button>
+</nav>
+
+<script>
+const RACE_DATE = new Date('2026-07-12T00:00:00');
+const PLAN_START = new Date('2026-03-23T00:00:00');
+const DAY_NAMES = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+const WORKOUTS = {"1": {"dates": "Mar 23\u201329", "phase": "Base I", "run_mi": 13.0, "days": [{"type": "run", "title": "Easy Run \u2013 3 mi", "body": "Easy Run\n- 4.8km Z2 HR"}, {"type": "ride", "title": "Sweet Spot 2\u00d712 \u2013 55 min", "body": "Warmup\n- 10m ramp 50-65%\n\nMain Set 2x\n- 12m 90%\n- 6m 60%\n\nCooldown\n- 7m ramp 65-50%"}, {"type": "rest", "title": "REST", "body": ""}, {"type": "run", "title": "Easy Run 3.5 mi + Strides", "body": "Easy Run\n- 5.0km Z2 HR\n\nStrides 6x\n- 20s Z5\n- 40s Z1 HR"}, {"type": "rest", "title": "REST (no workout \u2013 Fri Mar 27)", "body": ""}, {"type": "ride", "title": "Z2 Endurance \u2013 60 min", "body": "Warmup\n- 5m ramp 50-65%\n\nMain Set\n- 50m 65%\n\nCooldown\n- 5m ramp 65-50%"}, {"type": "run", "title": "Long Run \u2013 6.5 mi", "body": "Long Run\n- 10.5km Z2 HR"}]}, "2": {"dates": "Mar 30\u2013Apr 5", "phase": "Base I", "run_mi": 14.5, "days": [{"type": "run", "title": "Easy Run \u2013 3.5 mi", "body": "Easy Run\n- 5.6km Z2 HR"}, {"type": "ride", "title": "Sweet Spot 3\u00d710 \u2013 55 min", "body": "Warmup\n- 10m ramp 50-65%\n\nMain Set 3x\n- 10m 90%\n- 5m 60%\n\nCooldown\n- 5m ramp 65-50%"}, {"type": "rest", "title": "REST", "body": ""}, {"type": "run", "title": "Easy Run 4 mi + Strides", "body": "Easy Run\n- 5.8km Z2 HR\n\nStrides 6x\n- 20s Z5\n- 40s Z1 HR"}, {"type": "ride", "title": "Z2 Endurance \u2013 55 min", "body": "Warmup\n- 5m ramp 50-65%\n\nMain Set\n- 45m 65%\n\nCooldown\n- 5m ramp 65-50%"}, {"type": "ride", "title": "Z2 Endurance \u2013 60 min", "body": "Warmup\n- 5m ramp 50-65%\n\nMain Set\n- 50m 65%\n\nCooldown\n- 5m ramp 65-50%"}, {"type": "run", "title": "Long Run \u2013 7 mi", "body": "Long Run\n- 11.3km Z2 HR"}]}, "3": {"dates": "Apr 6\u201312", "phase": "Base I", "run_mi": 15.0, "days": [{"type": "run", "title": "Easy Run \u2013 3.5 mi", "body": "Easy Run\n- 5.6km Z2 HR"}, {"type": "ride", "title": "Sweet Spot 2\u00d715 \u2013 60 min", "body": "Warmup\n- 10m ramp 50-65%\n\nMain Set 2x\n- 15m 90%\n- 5m 60%\n\nCooldown\n- 10m ramp 65-50%"}, {"type": "rest", "title": "REST", "body": ""}, {"type": "run", "title": "Easy Run 4 mi + Strides", "body": "Easy Run\n- 5.8km Z2 HR\n\nStrides 6x\n- 20s Z5\n- 40s Z1 HR"}, {"type": "ride", "title": "Z2 Endurance \u2013 55 min", "body": "Warmup\n- 5m ramp 50-65%\n\nMain Set\n- 45m 65%\n\nCooldown\n- 5m ramp 65-50%"}, {"type": "ride", "title": "Tempo Progression \u2013 60 min", "body": "Warmup\n- 10m ramp 50-70%\n\nMain Set\n- 10m 95%\n- 5m 60%\n- 15m 95%\n\nCooldown\n- 20m ramp 70-50%"}, {"type": "run", "title": "Long Run \u2013 7.5 mi", "body": "Long Run\n- 12.1km Z2 HR"}]}, "4": {"dates": "Apr 13\u201319", "phase": "Base I", "run_mi": 12.0, "recovery": true, "days": [{"type": "run", "title": "Easy Run \u2013 3 mi", "body": "Easy Run\n- 4.8km Z2 HR"}, {"type": "ride", "title": "Recovery Spin \u2013 45 min", "body": "Easy Spin\n- 45m 55%"}, {"type": "rest", "title": "REST", "body": ""}, {"type": "run", "title": "Easy Run \u2013 3 mi", "body": "Easy Run\n- 4.8km Z2 HR"}, {"type": "ride", "title": "Recovery Spin \u2013 45 min", "body": "Easy Spin\n- 45m 55%"}, {"type": "rest", "title": "REST", "body": ""}, {"type": "run", "title": "Long Run \u2013 6 mi", "body": "Long Run\n- 9.7km Z2 HR"}]}, "5": {"dates": "Apr 20\u201326", "phase": "Base II", "run_mi": 15.0, "days": [{"type": "run", "title": "Easy Run \u2013 3.5 mi", "body": "Easy Run\n- 5.6km Z2 HR"}, {"type": "ride", "title": "FTP Intervals 3\u00d710 \u2013 60 min", "body": "Warmup\n- 10m ramp 50-75%\n\nMain Set 3x\n- 10m 100%\n- 5m 55%\n\nCooldown\n- 5m ramp 70-50%"}, {"type": "rest", "title": "REST", "body": ""}, {"type": "run", "title": "Easy Run 4.5 mi + Strides", "body": "Easy Run\n- 6.4km Z2 HR\n\nStrides 6x\n- 20s Z5\n- 40s Z1 HR"}, {"type": "ride", "title": "Z2 Endurance \u2013 55 min", "body": "Warmup\n- 5m ramp 50-65%\n\nMain Set\n- 45m 65%\n\nCooldown\n- 5m ramp 65-50%"}, {"type": "ride", "title": "Sweet Spot 2\u00d718 \u2013 65 min", "body": "Warmup\n- 10m ramp 50-65%\n\nMain Set 2x\n- 18m 90%\n- 6m 60%\n\nCooldown\n- 7m ramp 65-50%"}, {"type": "run", "title": "Long Run \u2013 7 mi", "body": "Long Run\n- 11.3km Z2 HR"}]}, "6": {"dates": "Apr 27\u2013May 3", "phase": "Base II", "run_mi": 15.5, "days": [{"type": "run", "title": "Easy Run \u2013 3.5 mi", "body": "Easy Run\n- 5.6km Z2 HR"}, {"type": "ride", "title": "Over-Unders 2\u00d7(4\u00d790s) \u2013 60 min", "body": "Warmup\n- 10m ramp 50-75%\n\nMain Set 2x\n- 90s 105%\n- 90s 95%\n- 90s 105%\n- 90s 95%\n- 90s 105%\n- 90s 95%\n- 90s 105%\n- 90s 95%\n- 8m 55%\n\nCooldown\n- 8m ramp 65-50%"}, {"type": "swim", "title": "Swim \u2013 Technique 1600m", "body": "Warmup\n- 300mtr Z1 Pace\n\nCatch-Up Drill 4x\n- 50mtr easy \u2013 catch-up drill\n- 25mtr easy freestyle\n\nMain Set 8x\n- 100mtr 2:20/100m Pace\n- 15s rest\n\nCooldown\n- 200mtr Z1 Pace"}, {"type": "run", "title": "Tempo Run \u2013 4.5 mi (2\u00d71.5 mi @ 5:15/km)", "body": "Warmup\n- 2.4km Z2 HR\n\nMain Set 2x\n- 2.4km 5:15/km Pace\n- 800mtr Z2 HR\n\nCooldown\n- 2.4km Z2 HR"}, {"type": "ride", "title": "Z2 Endurance \u2013 55 min", "body": "Warmup\n- 5m ramp 50-65%\n\nMain Set\n- 45m 65%\n\nCooldown\n- 5m ramp 65-50%"}, {"type": "ride", "title": "Sweet Spot 3\u00d712 \u2013 65 min", "body": "Warmup\n- 10m ramp 50-65%\n\nMain Set 3x\n- 12m 90%\n- 5m 60%\n\nCooldown\n- 8m ramp 65-50%"}, {"type": "run", "title": "Long Run \u2013 7.5 mi", "body": "Long Run\n- 12.1km Z2 HR"}]}, "7": {"dates": "May 4\u201310", "phase": "Base II", "run_mi": 17.0, "days": [{"type": "run", "title": "Easy Run \u2013 4 mi", "body": "Easy Run\n- 6.4km Z2 HR"}, {"type": "ride", "title": "FTP Intervals 3\u00d712 \u2013 65 min", "body": "Warmup\n- 10m ramp 50-75%\n\nMain Set 3x\n- 12m 100%\n- 5m 55%\n\nCooldown\n- 5m ramp 70-50%"}, {"type": "swim", "title": "Swim \u2013 Drills + Sets 1650m", "body": "Warmup\n- 200mtr Z1 Pace\n\nFingertip Drag Drill 4x\n- 50mtr fingertip-drag drill\n- 25mtr easy freestyle\n\nMain Set 5x\n- 200mtr 2:15/100m Pace\n- 20s rest\n\nCooldown\n- 150mtr Z1 Pace"}, {"type": "run", "title": "Tempo Run \u2013 5 mi (2\u00d72 mi @ 5:15/km)", "body": "Warmup\n- 1.6km Z2 HR\n\nMain Set 2x\n- 3.2km 5:15/km Pace\n- 800mtr Z2 HR\n\nCooldown\n- 1.6km Z2 HR"}, {"type": "ride", "title": "Z2 Endurance \u2013 60 min", "body": "Warmup\n- 5m ramp 50-65%\n\nMain Set\n- 50m 65%\n\nCooldown\n- 5m ramp 65-50%"}, {"type": "ride", "title": "Sweet Spot 2\u00d720 \u2013 65 min", "body": "Warmup\n- 10m ramp 50-65%\n\nMain Set 2x\n- 20m 90%\n- 5m 60%\n\nCooldown\n- 10m ramp 65-50%"}, {"type": "run", "title": "Long Run \u2013 8 mi", "body": "Long Run\n- 12.9km Z2 HR"}]}, "8": {"dates": "May 11\u201317", "phase": "Base II", "run_mi": 13.5, "recovery": true, "days": [{"type": "run", "title": "Easy Run \u2013 3.5 mi", "body": "Easy Run\n- 5.6km Z2 HR"}, {"type": "ride", "title": "Recovery Spin \u2013 50 min", "body": "Easy Spin\n- 50m 55%"}, {"type": "swim", "title": "Swim \u2013 Easy 1500m", "body": "Warmup\n- 300mtr Z1 Pace\n\nEasy Set 5x\n- 200mtr Z1-Z2 Pace\n- 20s rest\n\nCooldown\n- 200mtr Z1 Pace"}, {"type": "run", "title": "Easy Run \u2013 3.5 mi", "body": "Easy Run\n- 5.6km Z2 HR"}, {"type": "ride", "title": "Recovery Spin \u2013 45 min", "body": "Easy Spin\n- 45m 55%"}, {"type": "rest", "title": "REST", "body": ""}, {"type": "run", "title": "Long Run \u2013 6.5 mi", "body": "Long Run\n- 10.5km Z2 HR"}]}, "9": {"dates": "May 18\u201324", "phase": "Build I", "run_mi": 18.5, "days": [{"type": "run", "title": "Easy Run \u2013 4.5 mi", "body": "Easy Run\n- 7.2km Z2 HR"}, {"type": "ride", "title": "Sweet Spot 2\u00d720 \u2013 65 min", "body": "Warmup\n- 10m ramp 50-65%\n\nMain Set 2x\n- 20m 90%\n- 5m 60%\n\nCooldown\n- 10m ramp 65-50%"}, {"type": "swim", "title": "Swim \u2013 Drills + Sets 1550m", "body": "Warmup\n- 300mtr Z1 Pace\n\nSide-Kick Drill 4x\n- 50mtr side-kick drill\n- 25mtr easy freestyle\n\nMain Set 4x\n- 200mtr 2:10/100m Pace\n- 20s rest\n\nCooldown\n- 150mtr Z1 Pace"}, {"type": "run", "title": "Interval Run \u2013 5 mi (3\u00d71 mi @ 5:00/km)", "body": "Warmup\n- 2.4km Z2 HR\n\nMain Set 3x\n- 1.6km 5:00/km Pace\n- 800mtr Z2 HR\n\nCooldown\n- 2.4km Z2 HR"}, {"type": "ride", "title": "VO2max 6\u00d73 min \u2013 58 min", "body": "Warmup\n- 10m ramp 50-75%\n\nMain Set 6x\n- 3m 118%\n- 3m 55%\n\nCooldown\n- 12m ramp 65-50%"}, {"type": "ride", "title": "Z2 Endurance \u2013 70 min", "body": "Warmup\n- 5m ramp 50-65%\n\nMain Set\n- 60m 65%\n\nCooldown\n- 5m ramp 65-50%"}, {"type": "run", "title": "Long Run \u2013 9 mi", "body": "Long Run\n- 14.5km Z2 HR"}]}, "10": {"dates": "May 25\u201331", "phase": "Build I", "run_mi": 20.0, "days": [{"type": "run", "title": "Easy Run \u2013 4.5 mi", "body": "Easy Run\n- 7.2km Z2 HR"}, {"type": "ride", "title": "FTP Intervals 4\u00d78 \u2013 65 min", "body": "Warmup\n- 10m ramp 50-75%\n\nMain Set 4x\n- 8m 103%\n- 4m 55%\n\nCooldown\n- 9m ramp 70-50%"}, {"type": "swim", "title": "Swim \u2013 100m Repeats 1600m", "body": "Warmup\n- 250mtr Z1 Pace\n\nMain Set 3x\n- 100mtr 2:10/100m Pace\n- 15s rest\n- 100mtr 2:10/100m Pace\n- 15s rest\n- 100mtr 2:10/100m Pace\n- 15s rest\n- 100mtr 2:10/100m Pace\n- 45s rest between sets\n\nCooldown\n- 150mtr Z1 Pace"}, {"type": "run", "title": "Tempo Run \u2013 5.5 mi (2\u00d72 mi @ 5:15/km)", "body": "Warmup\n- 2.0km Z2 HR\n\nMain Set 2x\n- 3.2km 5:15/km Pace\n- 800mtr Z2 HR\n\nCooldown\n- 2.0km Z2 HR"}, {"type": "ride", "title": "Sweet Spot + Punches \u2013 60 min", "body": "Warmup\n- 10m ramp 50-70%\n\nMain Set\n- 20m 88%\n\nPunches 3x\n- 30s 130%\n- 2m 55%\n\n- 20m 88%\n\nCooldown\n- 5m ramp 70-50%"}, {"type": "ride", "title": "Z2 Endurance \u2013 70 min", "body": "Warmup\n- 5m ramp 50-65%\n\nMain Set\n- 60m 65%\n\nCooldown\n- 5m ramp 65-50%"}, {"type": "run", "title": "Long Run \u2013 10 mi (race-pace finish)", "body": "Easy Portion\n- 13.6km Z2 HR\n\nRace Pace Finish 2x\n- 1.6km 5:00/km Pace\n- 400mtr Z2 HR"}]}, "11": {"dates": "Jun 1\u20137", "phase": "Build I", "run_mi": 24.5, "days": [{"type": "swim", "title": "Swim 1600m + Easy Ride 45 min (before travel)", "body": "\u2500\u2500 SWIM FIRST \u2500\u2500\n\nWarmup\n- 250mtr Z1 Pace\n\nMain Set 3x\n- 100mtr 2:10/100m Pace\n- 15s rest\n- 100mtr 2:10/100m Pace\n- 15s rest\n- 100mtr 2:10/100m Pace\n- 15s rest\n- 100mtr 2:10/100m Pace\n- 45s rest between sets\n\nCooldown\n- 150mtr Z1 Pace\n\n\u2500\u2500 THEN RIDE \u2500\u2500\n\nEasy Spin\n- 45m 55%"}, {"type": "run", "title": "Easy Run \u2013 4.5 mi (travel \u2013 run only)", "body": "Easy Run\n- 7.2km Z2 HR"}, {"type": "run", "title": "Easy Run \u2013 4 mi (travel \u2013 run only)", "body": "Easy Run\n- 6.4km Z2 HR"}, {"type": "run", "title": "Easy Run \u2013 3.5 mi (travel \u2013 run only)", "body": "Easy Run\n- 5.6km Z2 HR"}, {"type": "run", "title": "Easy Run \u2013 3.5 mi (travel \u2013 run only)", "body": "Easy Run\n- 5.6km Z2 HR"}, {"type": "ride", "title": "VO2max 5\u00d73 min \u2013 55 min", "body": "Warmup\n- 10m ramp 50-75%\n\nMain Set 5x\n- 3m 118%\n- 3m 55%\n\nCooldown\n- 15m ramp 65-50%"}, {"type": "run", "title": "Long Run \u2013 9 mi (moderate)", "body": "Long Run\n- 14.5km Z2-Z3 HR"}]}, "12": {"dates": "Jun 8\u201314", "phase": "Build I", "run_mi": 15.5, "recovery": true, "days": [{"type": "run", "title": "Easy Run \u2013 4 mi", "body": "Easy Run\n- 6.4km Z2 HR"}, {"type": "ride", "title": "Recovery Spin \u2013 50 min", "body": "Easy Spin\n- 50m 55%"}, {"type": "swim", "title": "Swim \u2013 Easy 1500m", "body": "Warmup\n- 300mtr Z1 Pace\n\nEasy Set 5x\n- 200mtr Z1-Z2 Pace\n- 20s rest\n\nCooldown\n- 200mtr Z1 Pace"}, {"type": "run", "title": "Easy Run \u2013 4 mi", "body": "Easy Run\n- 6.4km Z2 HR"}, {"type": "ride", "title": "Recovery Spin \u2013 50 min", "body": "Easy Spin\n- 50m 55%"}, {"type": "rest", "title": "REST", "body": ""}, {"type": "run", "title": "Long Run \u2013 7.5 mi", "body": "Long Run\n- 12.1km Z2 HR"}]}, "13": {"dates": "Jun 15\u201321", "phase": "Build II", "run_mi": 20.5, "days": [{"type": "run", "title": "Easy Run \u2013 4 mi", "body": "Easy Run\n- 6.4km Z2 HR"}, {"type": "ride", "title": "Sweet Spot 3\u00d715 \u2013 70 min", "body": "Warmup\n- 10m ramp 50-65%\n\nMain Set 3x\n- 15m 90%\n- 5m 60%\n\nCooldown\n- 10m ramp 65-50%"}, {"type": "swim", "title": "Swim \u2013 Build Set 1700m", "body": "Warmup\n- 300mtr Z1 Pace\n\nFist Drill 4x\n- 50mtr fist drill\n- 25mtr easy freestyle\n\nMain Set 3x\n- 200mtr 2:05/100m Pace\n- 30s rest\n\nSpeed Set 3x\n- 100mtr 2:00/100m Pace\n- 30s rest\n\nCooldown\n- 200mtr Z1 Pace"}, {"type": "brick", "title": "BRICK: Sweet Spot Ride + 2.5 mi Run", "body": "\u2500\u2500 RIDE \u2500\u2500\n\nWarmup\n- 10m ramp 50-75%\n\nMain Set\n- 30m 92%\n\nCooldown\n- 10m 65%\n- 5m ramp 65-50%\n\n\u2500\u2500 RUN IMMEDIATELY \u2500\u2500\n\nBrick Run \u2013 legs will feel heavy, that is normal\n- 4km Z3-Z4 HR"}, {"type": "run", "title": "Interval Run \u2013 4 mi (3\u00d70.75 mi @ 5:00/km)", "body": "Warmup\n- 2.4km Z2 HR\n\nMain Set 3x\n- 1.2km 5:00/km Pace\n- 800mtr Z2 HR\n\nCooldown\n- 2.4km Z2 HR"}, {"type": "ride", "title": "Z2 Endurance \u2013 75 min (outdoor OK)", "body": "Warmup\n- 5m ramp 50-65%\n\nMain Set\n- 65m 65%\n\nCooldown\n- 5m ramp 65-50%"}, {"type": "run", "title": "Long Run \u2013 10 mi (moderate)", "body": "Long Run\n- 16.1km Z2-Z3 HR"}]}, "14": {"dates": "Jun 22\u201328", "phase": "Build II", "run_mi": 24.0, "days": [{"type": "run", "title": "Easy Run \u2013 3.5 mi (travel \u2013 run only)", "body": "Easy Run\n- 5.6km Z2 HR"}, {"type": "run", "title": "Interval Run \u2013 4.5 mi (3\u00d71 mi @ 5:00/km, travel)", "body": "Warmup\n- 2.4km Z2 HR\n\nMain Set 3x\n- 1.6km 5:00/km Pace\n- 800mtr Z2 HR\n\nCooldown\n- 2.4km Z2 HR"}, {"type": "run", "title": "Easy Run \u2013 3.5 mi (travel \u2013 run only)", "body": "Easy Run\n- 5.6km Z2 HR"}, {"type": "run", "title": "Easy Run 3.5 mi + Strides (travel \u2013 run only)", "body": "Easy Run\n- 5.0km Z2 HR\n\nStrides 6x\n- 20s Z5\n- 40s Z1 HR"}, {"type": "rest", "title": "REST (travel home)", "body": ""}, {"type": "ride", "title": "FTP 2\u00d715 + Swim Race Sim 1650m", "body": "\u2500\u2500 RIDE \u2500\u2500\n\nWarmup\n- 10m ramp 50-75%\n\nMain Set 2x\n- 15m 100%\n- 5m 55%\n\nCooldown\n- 10m ramp 70-50%\n\n\u2500\u2500 THEN SWIM \u2500\u2500\n\nWarmup\n- 300mtr Z1 Pace\n\nRace Simulation\n- 750mtr 2:05/100m Pace\n\nEasy Recovery\n- 200mtr Z1 Pace\n\nSpeed 4x\n- 50mtr 1:55/100m Pace\n- 30s rest\n\nCooldown\n- 200mtr Z1 Pace"}, {"type": "run", "title": "Long Run \u2013 9 mi (moderate)", "body": "Long Run\n- 14.5km Z2-Z3 HR"}]}, "15": {"dates": "Jun 29\u2013Jul 5", "phase": "Taper", "run_mi": 16.0, "days": [{"type": "run", "title": "Easy Run \u2013 3.5 mi", "body": "Easy Run\n- 5.6km Z2 HR"}, {"type": "ride", "title": "Taper Sharp Ride \u2013 55 min", "body": "Warmup\n- 10m ramp 50-70%\n\nMain Set\n- 15m 88%\n\nOpeners 4x\n- 1m 115%\n- 2m 55%\n\nCooldown\n- 12m ramp 70-50%"}, {"type": "swim", "title": "Swim \u2013 Taper 1600m", "body": "Warmup\n- 300mtr Z1 Pace\n\nMain Set 4x\n- 200mtr 2:10/100m Pace\n- 20s rest\n\nRace-Pace Openers 6x\n- 50mtr 1:55/100m Pace\n- 30s rest\n\nCooldown\n- 200mtr Z1 Pace"}, {"type": "brick", "title": "BRICK: Taper Ride + 2 mi Run", "body": "\u2500\u2500 RIDE \u2500\u2500\n\nWarmup\n- 5m ramp 50-70%\n\nMain Set\n- 25m 90%\n\nCooldown\n- 5m 65%\n- 5m ramp 65-50%\n\n\u2500\u2500 RUN IMMEDIATELY \u2500\u2500\n\nBrick Run \u2013 focus on the transition feeling\n- 3.2km Z3 HR"}, {"type": "run", "title": "Easy Run \u2013 3.5 mi", "body": "Easy Run\n- 5.6km Z2 HR"}, {"type": "ride", "title": "Z2 Endurance \u2013 65 min", "body": "Warmup\n- 5m ramp 50-65%\n\nMain Set\n- 55m 65%\n\nCooldown\n- 5m ramp 65-50%"}, {"type": "run", "title": "Long Run \u2013 7 mi", "body": "Long Run\n- 11.3km Z2 HR"}]}, "16": {"dates": "Jul 6\u201312", "phase": "Race Week", "run_mi": 7.5, "days": [{"type": "run", "title": "Easy Run \u2013 3 mi", "body": "Easy Run\n- 4.8km Z2 HR"}, {"type": "ride", "title": "Race Week Activation \u2013 42 min", "body": "Warmup\n- 10m ramp 50-70%\n\nFTP Taste 3x\n- 2m 100%\n- 3m 55%\n\nOpeners 3x\n- 30s 120%\n- 2m 55%\n\nCooldown\n- 8m ramp 70-50%"}, {"type": "swim", "title": "Swim \u2013 Race Week 1500m", "body": "Warmup\n- 300mtr Z1 Pace\n\nMain Set 6x\n- 100mtr 2:05/100m Pace\n- 20s rest\n\nOpeners 8x\n- 50mtr 1:55/100m Pace\n- 20s rest\n\nCooldown\n- 200mtr Z1 Pace"}, {"type": "run", "title": "Easy Run 3 mi + Strides", "body": "Easy Run\n- 4.3km Z2 HR\n\nStrides 6x\n- 20s Z5\n- 40s Z1 HR"}, {"type": "ride", "title": "Recovery Spin \u2013 45 min", "body": "Easy Spin\n- 45m 55%"}, {"type": "run", "title": "Race Eve Shakeout \u2013 1.5 mi", "body": "Very Easy Shakeout\n- 2.4km Z1 HR"}, {"type": "race", "title": "\ud83c\udfc1 RACE DAY \u2013 Sprint Triathlon", "body": "Jul 12, 2026\n\nGood luck! Trust the training."}]}};
+
+// ── helpers ──────────────────────────────────────────────────────
+function today() {
+  const d = new Date();
+  return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+}
+
+function getWeekNum(date) {
+  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const diff = Math.floor((d - PLAN_START) / (7 * 86400000));
+  return diff + 1;
+}
+
+function getDayOfWeek(date) {
+  // returns 0=Mon..6=Sun within the week
+  return (date.getDay() + 6) % 7;
+}
+
+function todayWorkout() {
+  const t = today();
+  const wk = getWeekNum(t);
+  if (wk < 1 || wk > 16) return null;
+  const dow = getDayOfWeek(t);
+  const data = WORKOUTS[String(wk)];
+  if (!data) return null;
+  return { wk, dow, day: data.days[dow], phase: data.phase, dates: data.dates };
+}
+
+function daysUntilRace() {
+  const t = today();
+  const diff = Math.ceil((RACE_DATE - t) / 86400000);
+  return diff;
+}
+
+function phaseClass(phase) {
+  return 'phase-' + phase.replace(/ /g,'-');
+}
+
+function typeColor(type) {
+  const map = {run:'run',swim:'swim',ride:'ride',brick:'brick',rest:'rest',race:'race'};
+  return map[type] || 'rest';
+}
+
+function formatWorkoutText(body) {
+  if (!body) return '';
+  const lines = body.split('\n');
+  return lines.map(line => {
+    if (line.startsWith('- ')) return `<span class="interval-line">${escHtml(line)}</span>`;
+    if (line.trim() && !line.startsWith(' ')) return `<span class="section-header">${escHtml(line)}</span>`;
+    return escHtml(line);
+  }).join('\n');
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── copy to clipboard ─────────────────────────────────────────────
+function copyWorkout(title, body, btn) {
+  const text = title + '\n\n' + body;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = '⎘  copy for intervals.icu';
+      btn.classList.remove('copied');
+    }, 2000);
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+    btn.textContent = '✓ copied!'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '⎘  copy for intervals.icu'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ── card builder ──────────────────────────────────────────────────
+function buildDayCard(day, dayIndex, isToday, weekNum) {
+  const dayAbbr = ['MON','TUE','WED','THU','FRI','SAT','SUN'][dayIndex];
+  const hasBody = day.body && day.body.trim().length > 0;
+  const id = `card-w${weekNum}-d${dayIndex}`;
+
+  return `<div class="day-card type-${day.type}${isToday ? ' today-card' : ''}${!hasBody ? ' no-expand' : ''}"
+    id="${id}"
+    onclick="${hasBody ? `toggleCard('${id}')` : ''}">
+    <div class="day-card-header">
+      <div class="day-dot dot-${day.type}"></div>
+      <div class="day-label-col">
+        <div class="day-label${isToday ? ' today-label-day' : ''}">${dayAbbr}</div>
+      </div>
+      <div class="day-title${day.type==='rest'?' rest-title':''}${day.type==='race'?' race-title':''}">${escHtml(day.title)}</div>
+      ${hasBody ? '<div class="day-chevron">▼</div>' : ''}
+    </div>
+    ${hasBody ? `<div class="day-body">
+      <div class="workout-text">${formatWorkoutText(day.body)}</div>
+      <button class="copy-btn" onclick="event.stopPropagation(); copyWorkout(${JSON.stringify(day.title)}, ${JSON.stringify(day.body)}, this)">⎘&nbsp; copy for intervals.icu</button>
+    </div>` : ''}
+  </div>`;
+}
+
+function toggleCard(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('expanded');
+}
+
+// ── VIEWS ─────────────────────────────────────────────────────────
+let currentView = 'today';
+let currentWeekTab = null;
+
+function showView(view) {
+  currentView = view;
+  ['today','week','all'].forEach(v => {
+    document.getElementById('nav'+v.charAt(0).toUpperCase()+v.slice(1)).classList.toggle('active', v===view);
+  });
+  renderMain();
+  // sync tab bar
+  if (view === 'week' && currentWeekTab) {
+    syncTabToWeek(currentWeekTab);
+  }
+}
+
+function renderMain() {
+  const main = document.getElementById('mainContent');
+  if (currentView === 'today') main.innerHTML = renderToday();
+  else if (currentView === 'week') main.innerHTML = renderWeek(currentWeekTab || getCurrentWeek());
+  else main.innerHTML = renderAll();
+}
+
+function getCurrentWeek() {
+  const wk = getWeekNum(today());
+  return Math.max(1, Math.min(16, wk));
+}
+
+function renderToday() {
+  const t = today();
+  const info = todayWorkout();
+  const days = daysUntilRace();
+
+  if (!info) {
+    // before or after plan
+    if (t < PLAN_START) {
+      return `<div class="today-section"><div class="empty-state">Plan starts<br>Mon Mar 23</div></div>`;
+    }
+    return `<div class="today-section"><div class="empty-state">Plan complete!<br>Hope the race went well 🏁</div></div>`;
+  }
+
+  const { wk, dow, day, phase, dates } = info;
+  const hasBody = day.body && day.body.trim();
+  const weekData = WORKOUTS[String(wk)];
+
+  return `<div class="today-section">
+    <div class="today-header">
+      <div class="today-day-label">Today · Week ${wk}</div>
+      <div class="today-date-label">${dates}</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+      <span class="week-phase ${phaseClass(phase)}">${phase}</span>
+      ${weekData.recovery ? '<span class="recovery-badge">recovery</span>' : ''}
+    </div>
+    <div class="day-grid">
+      ${buildDayCard(day, dow, true, wk)}
+    </div>
+    <div style="margin-top:20px;">
+      <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">Rest of this week</div>
+      <div class="day-grid">
+        ${weekData.days.map((d,i) => i !== dow ? buildDayCard(d, i, false, wk) : '').join('')}
+      </div>
+    </div>
+    <div style="margin-top:16px;padding:12px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Mono',monospace;">
+      <div style="font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;">This week's running</div>
+      <div style="font-size:18px;color:var(--run);font-weight:500;">${weekData.run_mi} <span style="font-size:12px;color:var(--muted)">miles</span></div>
+    </div>
+  </div>`;
+}
+
+function renderWeek(wk) {
+  currentWeekTab = wk;
+  const data = WORKOUTS[String(wk)];
+  if (!data) return '';
+  const t = today();
+  const todayWk = getWeekNum(t);
+  const todayDow = getDayOfWeek(t);
+
+  return `<div class="week-section">
+    <div class="week-header">
+      <div class="week-meta">
+        <div class="week-num">Week ${wk}</div>
+        ${data.recovery ? '<span class="recovery-badge">recovery</span>' : ''}
+      </div>
+      <span class="week-phase ${phaseClass(data.phase)}">${data.phase}</span>
+    </div>
+    <div class="week-dates" style="margin-bottom:4px;">${data.dates}</div>
+    <div class="week-run-total">Run total: <span>${data.run_mi} mi</span></div>
+    <div class="day-grid">
+      ${data.days.map((d,i) => buildDayCard(d, i, wk===todayWk && i===todayDow, wk)).join('')}
+    </div>
+  </div>`;
+}
+
+function renderAll() {
+  const t = today();
+  const currentWk = getWeekNum(t);
+
+  return `<div class="overview-section">
+    <div class="overview-title">16-Week Plan</div>
+    <div class="overview-grid">
+      ${Object.entries(WORKOUTS).map(([wk, data]) => {
+        const w = parseInt(wk);
+        const isCurrent = w === currentWk;
+        const types = data.days.map(d => d.type).filter(t => t !== 'rest');
+        const icons = [...new Set(types)].map(t => ({run:'🏃',swim:'🏊',ride:'🚴',brick:'⚡',race:'🏁'}[t]||'')).join('');
+        return `<div class="overview-row ${isCurrent?'current-week':''} ${data.recovery?'recovery-week':''}"
+          onclick="currentWeekTab=${w}; showView('week');">
+          <div class="ov-wk">${w}</div>
+          <div style="flex:1;">
+            <div class="ov-dates">${data.dates}</div>
+          </div>
+          <span class="ov-phase ${phaseClass(data.phase)}">${data.phase}</span>
+          <div class="ov-mi">${data.run_mi}mi</div>
+          <div class="ov-icons">${icons}</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+// ── TAB BAR ───────────────────────────────────────────────────────
+function buildTabBar() {
+  const bar = document.getElementById('tabBar');
+  const t = today();
+  const currentWk = getWeekNum(t);
+  const tabs = [];
+
+  for (let w = 1; w <= 16; w++) {
+    const data = WORKOUTS[String(w)];
+    const isCurrent = w === currentWk;
+    const isRec = data.recovery;
+    tabs.push(`<div class="tab ${isCurrent?'today-tab':''} ${isRec?'recovery-tab':''}"
+      id="tab-${w}"
+      onclick="currentWeekTab=${w}; showView('week');">
+      Wk ${w}
+    </div>`);
+  }
+  bar.innerHTML = tabs.join('');
+}
+
+function syncTabToWeek(wk) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const tab = document.getElementById(`tab-${wk}`);
+  if (tab) {
+    tab.classList.add('active');
+    tab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  }
+}
+
+// ── HEADER ────────────────────────────────────────────────────────
+function updateHeader() {
+  const days = daysUntilRace();
+  const t = today();
+  const cd = document.getElementById('countdown');
+  const tl = document.getElementById('todayLabel');
+
+  if (days <= 0) {
+    cd.innerHTML = 'Race day! 🏁';
+    tl.textContent = '';
+  } else if (days === 1) {
+    cd.innerHTML = '<span>1</span> day to race';
+  } else {
+    cd.innerHTML = `<span>${days}</span> days to race`;
+  }
+
+  const dayName = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][t.getDay()];
+  tl.textContent = `${dayName}, ${MONTH_NAMES[t.getMonth()]} ${t.getDate()}`;
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+updateHeader();
+buildTabBar();
+renderMain();
+</script>
+</body>
+</html>
